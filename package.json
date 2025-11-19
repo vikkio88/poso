@@ -1,0 +1,26 @@
+{
+  "name": "poso",
+  "version": "0.0.1",
+  "module": "index.ts",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "poso": "./dist/index.js"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/minimist": "^1.2.5"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "minimist": "^1.2.8",
+    "picocolors": "^1.1.1"
+  },
+  "scripts": {
+    "start": "bun ./src/index.ts",
+    "clean": "rm -rf dist",
+    "compile": "bun ./bun.build.ts"
+  }
+}
