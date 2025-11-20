@@ -4,11 +4,14 @@ import { safeParse } from "../../rest/http";
 import { parseRequest } from "../../rest/parser";
 import { argsParser } from "../args";
 
+const allowedFlags = [
+  "stop-on-http-error",
+  "show-headers",
+  "status-only",
+] as const;
+
 export async function request(argv: string[]) {
-  //TODO: parse and remove flags, I could pass --stop-on-error and --show-headers
-  // also could do --body and load a file with vars --vars and load files
-  //  need to pass the correct flags
-  const { args, flags } = argsParser(argv);
+  const { args, flags } = argsParser(argv, allowedFlags);
   const [requestString] = args;
   if (!requestString) {
     console.error(`${c.red("Missing parameter:")} ${c.b("request string")}`);
@@ -31,7 +34,15 @@ export async function request(argv: string[]) {
 
   const response = await runner();
 
-  if (response.status < 200 || response.status > 299) {
+  if (flags["status-only"]) {
+    console.log(response.status);
+    process.exit(0);
+  }
+
+  if (
+    (flags["stop-on-http-error"] && response.status < 200) ||
+    response.status > 299
+  ) {
     console.error(
       `${c.red("Unexpected response status:")} ${c.b(response.status.toString())}`,
     );
@@ -39,5 +50,9 @@ export async function request(argv: string[]) {
   }
 
   const responseBody = await safeParse(response);
+  if (flags["show-headers"]) {
+    console.log(response.headers);
+    console.log();
+  }
   console.log(responseBody);
 }

@@ -1,36 +1,29 @@
 import minimist from "minimist";
-import { c } from "../libs/colours";
 
-export type ParsedArgs = {
-  args: string[];
-  flags: Record<string, string | boolean>;
-};
-
-export function argsParser(
+export function argsParser<const Allowed extends readonly string[]>(
   argv: string[],
-  allowedFlags: string[] = [],
-): ParsedArgs {
+  allowedFlags: Allowed = [] as unknown as Allowed,
+): {
+  args: string[];
+  flags: Record<Allowed[number], string | boolean>;
+} {
   const parsed = minimist(argv);
 
-  const args = parsed._;
-  const flags: Record<string, string | boolean> = {};
+  const args = parsed._ as string[];
+
+  const flags = {} as Record<Allowed[number], string | boolean>;
 
   Object.keys(parsed).forEach((key) => {
     if (key === "_") return;
 
-    if (!allowedFlags.includes(key)) {
+    if (!allowedFlags.includes(key as Allowed[number])) {
       console.error(
-        `${c.red("Unknown flag:")} ${c.b(key)}
-        ${
-          allowedFlags.length
-            ? `Allowed flags: ${allowedFlags.map((f) => c.b(f)).join(", ")}`
-            : ""
-        }`,
+        `Unknown flag: ${key}. Allowed flags: ${allowedFlags.join(", ")}`,
       );
       process.exit(1);
     }
 
-    flags[key] = parsed[key];
+    flags[key as Allowed[number]] = parsed[key];
   });
 
   return { args, flags };
