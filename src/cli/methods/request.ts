@@ -1,4 +1,5 @@
 import { c } from "../../libs/colours";
+import { parseVariables } from "../../libs/variables";
 import { build } from "../../rest/builder";
 import { safeParse } from "../../rest/http";
 import { parseRequest } from "../../rest/parser";
@@ -12,13 +13,13 @@ const allowedFlags = [
 
 export async function request(argv: string[]) {
   const { args, flags } = argsParser(argv, allowedFlags);
-  const [requestString] = args;
+  const [requestString, variables] = args;
   if (!requestString) {
     console.error(`${c.red("Missing parameter:")} ${c.b("request string")}`);
     process.exit(1);
   }
 
-  const req = parseRequest(requestString);
+  const req = parseRequest(requestString, parseVariables(variables));
   if (!req) {
     console.error(
       `${c.red("Failed to parse request string:")} ${c.b(requestString)}`,

@@ -1,4 +1,5 @@
-import type { Method, RestRequest, Variables } from "./types";
+import type { Variables } from "../libs/variables";
+import type { Method, RestRequest } from "./types";
 
 const REQUEST_FORMAT =
   /^(GET|POST|PATCH|PUT|DELETE)\s+([^\n]+)(?:\n([\s\S]*?))?(?:\n\n([\s\S]*))?$/i;
