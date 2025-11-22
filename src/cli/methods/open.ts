@@ -3,6 +3,7 @@ import { APP_BIN } from "../../config";
 import { parseFile } from "../../http/file";
 import { c } from "../../libs/colours";
 import { build } from "../../rest/builder";
+import type { RestRequest } from "../../rest/types";
 import { requestRunner } from "../shared/reqRunner";
 
 export async function open(args: string[]) {
@@ -35,17 +36,21 @@ export async function open(args: string[]) {
   }
 
   if (reqs.length === 1) {
-    console.log(`File ${filePath} has only 1 request, executing it...\n`);
+    console.log(`File ${c.b(filePath)} has only 1 request, executing it...\n`);
     const req = Object.values(reqs.requests)[0]!;
-    const r = build(req);
-    if (!r) {
-      console.error(`${c.red("Invalid request syntax:")} ${c.b(filePath)}`);
-      process.exit(1);
-    }
-
-    await requestRunner(r);
+    await exec(req, filePath);
     return;
   }
 
   //TODO: if there are more requests and we did not specified which one we need to pick
+}
+
+async function exec(req: RestRequest, filePath: string) {
+  const r = build(req);
+  if (!r) {
+    console.error(`${c.red("Invalid request syntax:")} ${c.b(filePath)}`);
+    process.exit(1);
+  }
+
+  await requestRunner(r);
 }
