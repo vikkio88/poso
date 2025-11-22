@@ -1,47 +1,41 @@
-import type { HttpFile } from "./types";
-
 import { parseVariables } from "../libs/variables";
 import { parseRequest } from "../rest/parser";
 import type { RestRequest } from "../rest/types";
+import type { HttpFile } from "./types";
 
 export function parseFile(fileString: string): HttpFile {
-  const trimmed = fileString.trim();
-  const lines = trimmed.split(/\r?\n/);
-  let i = 0;
+  const raw = fileString.replace(/\r/g, "");
+  const lines = raw.split("\n");
 
-  let varsBlock = "";
+  let i = 0;
+  while (i < lines.length && lines[i]!.trim() === "") i++;
+
+  const varLines: string[] = [];
   while (i < lines.length && lines[i]!.trim().startsWith("@")) {
-    varsBlock += lines[i] + "\n";
+    varLines.push(lines[i]!);
     i++;
   }
 
-  const variables = parseVariables(varsBlock);
-
-  const rest = trimmed.slice(varsBlock.length).trim();
-
+  const variables = parseVariables(varLines.join("\n"));
+  const rest = lines.slice(i).join("\n");
   const parts = rest.split(/\n?###\s*/);
 
   const requests: Record<string, RestRequest> = {};
+  let auto = 0;
 
-  for (let idx = 0; idx < parts.length; idx++) {
-    const block = parts[idx]!.trim();
+  for (const part of parts) {
+    const block = part.trim();
     if (!block) continue;
 
     const m = block.match(/^([^\n]+)\n([\s\S]*)$/);
-    let key = idx.toString();
-    let body;
+    let key: string;
+    let body: string;
 
-    if (
-      m &&
-      !m[1]!.startsWith("GET") &&
-      !m[1]!.startsWith("POST") &&
-      !m[1]!.startsWith("PUT") &&
-      !m[1]!.startsWith("PATCH") &&
-      !m[1]!.startsWith("DELETE")
-    ) {
+    if (m && !/^(GET|POST|PUT|PATCH|DELETE)\b/.test(m[1]!)) {
       key = m[1]!.trim();
       body = m[2]!.trim();
     } else {
+      key = String(auto++);
       body = block;
     }
 
@@ -49,5 +43,5 @@ export function parseFile(fileString: string): HttpFile {
     if (parsed) requests[key] = parsed;
   }
 
-  return { variables, requests };
+  return { variables, requests, length: Object.keys(requests).length };
 }

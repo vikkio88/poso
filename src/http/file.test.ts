@@ -2,8 +2,7 @@ import { expect, test } from "bun:test";
 import { parseFile } from "./file";
 
 test("parses variables and one simple request", () => {
-  const file = `
-@id=2
+  const file = `@id=2
 
 GET https://jsonplaceholder.typicode.com/todos/{{id}}
 `;
