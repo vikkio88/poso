@@ -13,6 +13,18 @@ test("parses multi-line variables", () => {
   expect(parseVariables(input)).toEqual(expected);
 });
 
+test("parses multi-line variables with spaces", () => {
+  const input = `
+@id = CIAO
+@url = https://ciao.com
+`;
+  const expected: Variables = {
+    id: "CIAO",
+    url: "https://ciao.com",
+  };
+  expect(parseVariables(input)).toEqual(expected);
+});
+
 test("parses single-line variables", () => {
   const input = "@id=CIAO @url=https://ciao.com";
   const expected: Variables = {

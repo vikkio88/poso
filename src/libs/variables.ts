@@ -4,7 +4,7 @@ export function parseVariables(varString: string | undefined): Variables {
   const vars: Variables = {};
   if (!varString) return vars;
 
-  const regex = /@(\w+)=([^\s@]+)/g;
+  const regex = /@(\w+)\s*=\s*([^\s@]+)/g;
   let match;
   while ((match = regex.exec(varString)) !== null) {
     const [, key, value] = match;

@@ -1,9 +1,12 @@
-import { parseVariables } from "../libs/variables";
+import { parseVariables, type Variables } from "../libs/variables";
 import { parseRequest } from "../rest/parser";
 import type { RestRequest } from "../rest/types";
 import type { HttpFile } from "./types";
 
-export function parseFile(fileString: string): HttpFile {
+export function parseFile(
+  fileString: string,
+  additionalVariables: Variables,
+): HttpFile {
   const raw = fileString.replace(/\r/g, "");
   const lines = raw.split("\n");
 
@@ -38,8 +41,8 @@ export function parseFile(fileString: string): HttpFile {
       key = String(auto++);
       body = block;
     }
-
-    const parsed = parseRequest(body, variables);
+    const mergedVars = { ...variables, ...additionalVariables };
+    const parsed = parseRequest(body, mergedVars);
     if (parsed) requests[key] = parsed;
   }
 
