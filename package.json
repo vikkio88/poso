@@ -1,6 +1,6 @@
 {
   "name": "poso",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "module": "./src/index.ts",
   "description": "a cli utility to run vscode-rest requests",
   "author": "Vincenzo Ciaccio <vincenzo.ciaccio@gmail.com>",
