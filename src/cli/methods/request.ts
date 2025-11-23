@@ -27,5 +27,5 @@ export async function request(argv: string[]) {
     process.exit(1);
   }
 
-  requestRunner(runner, flags);
+  requestRunner(req, runner, flags);
 }

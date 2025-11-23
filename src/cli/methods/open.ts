@@ -95,7 +95,7 @@ async function exec(
     console.error(`${c.red("Invalid request syntax:")} ${c.b(filePath)}`);
     process.exit(1);
   }
-  await requestRunner(built, flags);
+  await requestRunner(req, built, flags);
 }
 
 function list(reqs: Record<string, RestRequest>) {
