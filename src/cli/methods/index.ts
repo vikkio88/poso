@@ -13,6 +13,7 @@ export const map: Record<MethodName | string, (args: string[]) => void> = {
   version,
   v: version,
   "-v": version,
+  "--version": version,
 
   o: open,
   open,

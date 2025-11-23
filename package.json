@@ -1,7 +1,20 @@
 {
   "name": "poso",
   "version": "0.0.1",
-  "module": "index.ts",
+  "module": "./src/index.ts",
+  "description": "a cli utility to run vscode-rest requests",
+  "author": "Vincenzo Ciaccio <vincenzo.ciaccio@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "REST",
+    "http-client",
+    "vscode-rest",
+    "rest-request"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vikkio88/poso.git"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
@@ -19,6 +32,7 @@
     "picocolors": "^1.1.1"
   },
   "scripts": {
+    "prepublish": "bun compile",
     "start": "bun ./src/index.ts",
     "clean": "rm -rf dist",
     "compile": "bun ./bun.build.ts"
