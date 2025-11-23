@@ -51,8 +51,8 @@ export async function open(argv: string[]) {
     console.log(`File ${c.b(filePath)} has only 1 request, executing it...\n`);
     req = Object.values(reqs)[0]!;
   }
-
-  if (flags["request-name"]) {
+  const reqName = flags["request-name"];
+  if (reqName || Number(reqName) === 0) {
     const name = String(flags["request-name"]);
     req = reqs[name];
     if (!req) {
@@ -65,24 +65,12 @@ export async function open(argv: string[]) {
   }
 
   if (!req) {
-    const rl = createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    });
-
-    while (!req) {
-      console.log("Choose:");
-      list(reqs);
-      console.log(c.b("exit") + " to stop.");
-      const line = await rl.question("> ");
-      if (line === "exit") process.exit(0);
-      req = reqs[line];
-      if (!req)
-        console.error(c.red(`${c.b(line)} is not a valid request\nTry again.`));
-    }
+    console.log(reqs);
+    req = await chooseRequest(reqs);
   }
 
   await exec(req, flags, filePath);
+  process.exit(0);
 }
 
 async function exec(
@@ -100,7 +88,41 @@ async function exec(
 
 function list(reqs: Record<string, RestRequest>) {
   const names = Object.keys(reqs)
-    .map((name) => `- ${name}`)
+    .map((name) => {
+      const r = reqs[name];
+      return `- ${name}\n\t${c.blue(r?.method)} ${c.green(r?.url)}`;
+    })
     .join("\n");
   console.log(`${c.b("Requests:")}\n${names}`);
+}
+
+const EXIT_STRINGS = [":quit", ":q"] as const;
+
+async function chooseRequest(
+  reqs: Record<string, RestRequest>,
+): Promise<RestRequest> {
+  let req: RestRequest | undefined;
+
+  const rl = createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  while (!req) {
+    console.log("Choose between:");
+    list(reqs);
+    console.log(`\n${c.b(EXIT_STRINGS[1])} to quit.\n`);
+
+    const line = await rl.question("> ");
+    if (EXIT_STRINGS.includes(line as (typeof EXIT_STRINGS)[number]))
+      process.exit(0);
+
+    req = reqs[line];
+    if (!req) {
+      console.error(c.red(`${c.b(line)} is not a valid request\nTry again.`));
+    }
+  }
+
+  rl.close();
+  return req;
 }
