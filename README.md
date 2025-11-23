@@ -8,9 +8,9 @@ npm i -g poso
 ### Request flags
 
 - `--stop-on-http-error` Stop when the response status is not 2xx
-- `--show-headers` Show the response headers
-- `--status-only` Print only the response status
-
+- `--show-headers`       Show the response headers
+- `--status-only`        Print only the response status
+- `--silent`             Reduce verbosity.
 
 ## Execute a request
 
