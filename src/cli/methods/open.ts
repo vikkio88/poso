@@ -12,7 +12,9 @@ import { requestRunner, runnerFlags } from "../shared/reqRunner";
 export async function open(argv: string[]) {
   const { args, flags } = argsParser(argv, [
     ...runnerFlags,
+    "list",
     "request-name",
+    "silent",
   ] as const);
   const [filePath, additionalVariablesStr] = args;
 
@@ -45,10 +47,18 @@ export async function open(argv: string[]) {
     process.exit(1);
   }
 
+  if (flags.list) {
+    list(reqs);
+    process.exit();
+  }
+
   let req: RestRequest | undefined;
 
   if (parsed.length === 1 && !flags["request-name"]) {
-    console.log(`File ${c.b(filePath)} has only 1 request, executing it...\n`);
+    if (!flags.silent)
+      console.log(
+        `\nFile ${c.b(filePath)} has only 1 request, executing it...\n`,
+      );
     req = Object.values(reqs)[0]!;
   }
   const reqName = flags["request-name"];

@@ -31,6 +31,11 @@ Add override variables and select a specific request:
 poso o ./file.http "@id=OVERRIDE_ID" --request-name="Get One"
 ```
 
+Just show a list of the requests in a file
+```bash
+poso o ./file.http --list
+```
+
 
 
 ## TODO

@@ -23,8 +23,11 @@ ${c.u("Methods:")}
   ${c.b("open")} [ ${c.b("o")} ]
     ${c.i(`${APP_BIN} open ./file.http`)}
     Open a .http file and interactively select a request.
-    Override variables or preselect a request with flags.
+    Override variables or preselect a request with ${c.u("--request-name")} flag.
     Example: ${c.blue(`${APP_BIN} o ./file.http "@id=123" --request-name="Get One"`)}
+
+    ${c.u("--list")} to just show a list of requests in a file:
+    Example: ${c.blue(`${APP_BIN} o ./file.http --list`)}
 
   ${c.u("Flags (usable with both 'request' and 'open'):")}
 
@@ -36,6 +39,9 @@ ${c.u("Methods:")}
 
     ${c.b("--status-only")}
       Print only the response status code.
+
+    ${c.b("--silent")}
+      reduce verbosity.
 `;
 
 export function help({

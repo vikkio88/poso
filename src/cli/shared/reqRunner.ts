@@ -6,6 +6,7 @@ export const runnerFlags = [
   "stop-on-http-error",
   "show-headers",
   "status-only",
+  "silent",
 ] as const;
 
 export async function requestRunner(
@@ -15,15 +16,17 @@ export async function requestRunner(
     "status-only": false,
     "show-headers": false,
     "stop-on-http-error": false,
+    silent: false,
   },
 ) {
-  //TODO: add a silent flag
-  const hr = "-".repeat(req.method.length + req.url.length + 6);
-  console.log(`${hr}
+  if (!flags.silent) {
+    const hr = "-".repeat(req.method.length + req.url.length + 6);
+    console.log(`${hr}
   Executing request:
     ${c.b(`${c.green(req.method)} ${c.blue(req.url)}`)}
 ${hr}
     `);
+  }
   const response = await runner();
 
   if (flags["status-only"]) {
