@@ -42,6 +42,9 @@ ${c.u("Methods:")}
 
     ${c.b("--silent")}
       reduce verbosity.
+
+    ${c.b("--json")}
+      parse the response and print it as a json string.
 `;
 
 export function help({

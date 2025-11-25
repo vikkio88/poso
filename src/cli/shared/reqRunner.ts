@@ -1,4 +1,5 @@
 import { c } from "../../libs/colours";
+import { printJs, printJson } from "../../libs/printers";
 import { safeParse } from "../../rest/http";
 import type { RestRequest } from "../../rest/types";
 
@@ -7,6 +8,7 @@ export const runnerFlags = [
   "show-headers",
   "status-only",
   "silent",
+  "json",
 ] as const;
 
 export async function requestRunner(
@@ -17,6 +19,7 @@ export async function requestRunner(
     "show-headers": false,
     "stop-on-http-error": false,
     silent: false,
+    json: false,
   },
 ) {
   if (!flags.silent) {
@@ -34,10 +37,7 @@ ${hr}
     process.exit(0);
   }
 
-  if (
-    (flags["stop-on-http-error"] && response.status < 200) ||
-    response.status > 299
-  ) {
+  if (flags["stop-on-http-error"] && response.status > 299) {
     console.error(
       `${c.red("Unexpected response status:")} ${c.b(response.status.toString())}`,
     );
@@ -49,5 +49,6 @@ ${hr}
     console.log(response.headers);
     console.log();
   }
-  console.log(responseBody);
+
+  flags.json ? printJson(responseBody) : printJs(responseBody);
 }

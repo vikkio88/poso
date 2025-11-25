@@ -5,7 +5,7 @@ import type { HttpFile } from "./types";
 
 export function parseFile(
   fileString: string,
-  additionalVariables: Variables,
+  additionalVariables: Variables = {},
 ): HttpFile {
   const raw = fileString.replace(/\r/g, "");
   const lines = raw.split("\n");

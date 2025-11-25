@@ -11,6 +11,7 @@ npm i -g poso
 - `--show-headers`       Show the response headers
 - `--status-only`        Print only the response status
 - `--silent`             Reduce verbosity.
+- `--json`               Parse the response and print it as json string.
 
 ## Execute a request
 
